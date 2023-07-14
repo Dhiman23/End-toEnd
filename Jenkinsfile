@@ -1,3 +1,5 @@
+@Library('my-shared-libary') _
+
 pipeline{
     agent any
 
@@ -5,7 +7,10 @@ pipeline{
         stage('Git checkout'){
             steps{
                 script{
-                    git 'https://github.com/Dhiman23/End-toEnd.git'
+                   gitCheckout(
+                    branch: "master"
+                    url: "https://github.com/Dhiman23/End-toEnd.git"
+                   )
                 }
             }
         }
