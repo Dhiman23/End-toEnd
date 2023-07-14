@@ -7,8 +7,9 @@ pipeline{
     }
 
     stages{
-        when{experssion {param.action == 'create'}}
+        
         stage('Git checkout'){
+            when{experssion {param.action == 'create'}}
             steps{
                 script{
                    gitCheckout(
