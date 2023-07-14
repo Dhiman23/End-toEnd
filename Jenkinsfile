@@ -8,7 +8,7 @@ pipeline{
             steps{
                 script{
                    gitCheckout(
-                    branch: "master"
+                    branch: "master",
                     url: "https://github.com/Dhiman23/End-toEnd.git"
                    )
                 }
