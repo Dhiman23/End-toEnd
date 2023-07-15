@@ -27,7 +27,7 @@ pipeline{
             }
         }
         stage('Intergration Test maven'){
-            when{experssion { params.action == 'create'}}
+            
             steps{
                 script{
                     mvnIntegrationTest()
