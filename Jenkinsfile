@@ -2,14 +2,12 @@
 
 pipeline{
     agent any
-    parameters {
-  choice choices: ['create', 'delete'], description: 'create/delete', name: 'action'
-   }
+   
 
     stages{
         
         stage('Git checkout'){
-            when{experssion { params.action == 'create'}}
+            
             steps{
                 script{
                    gitCheckout(
@@ -21,7 +19,7 @@ pipeline{
         }
 
         stage('Unit Test Maven'){
-            when{experssion { params.action == 'create'}}
+            
             steps{
                 script{
                     mvnTest()
@@ -37,10 +35,11 @@ pipeline{
             }
         }
         stage('Static code analysis: SonarQube'){
-           when{experssion { params.action == 'create'}}
+           
            steps{
             script{
-                staticCodeAnalysis()
+                def SonarQubecredentialId = 
+                staticCodeAnalysis(SonarQubecredentialId)
             }
           }
         }
