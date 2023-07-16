@@ -4,9 +4,9 @@ pipeline{
     agent any
     parameters{
         choice(name: 'action',choices: 'create\ndelete', description: 'Choose create/destroy')
-        string(name: 'ImageName',description: "name of the docker build",defaultValue: 'javapp')
-         string(name: 'ImageTag',description: "name of the docker build",defaultValue: 'v1')
-          string(name: 'DockerHubUser',description: "name of the Application",defaultValue: 'sajaldhimanitc1999')
+        string(name: 'aws_account_id',description: "AWS Account ID",defaultValue: '073372031334')
+         string(name: 'Region',description: "name of the docker build",defaultValue: 'us-east-1')
+          string(name: 'ECR_REPO_NAME',description: "name of the ECR",defaultValue: 'sajaldhimanitc1999')
     }
    
 
@@ -68,11 +68,11 @@ pipeline{
             }
         }
 
-         stage('Docker Image Build'){
+         stage('Docker Image Build: ECR'){
             when{expression{ params.action== 'create'}}
             steps{
                 script{
-                    dockerBuild("${params.ImageName}","${params.ImageTag}","${params.DockerHubUser}")
+                    dockerBuild("${params.aws_account_id}","${params.Region}","${params.ECR_REPO_NAME}")
                 }
             }
         }
@@ -80,11 +80,11 @@ pipeline{
             when{expression{ params.action== 'create'}}
             steps{
                 script{
-                    dockerImageScan("${params.ImageName}","${params.ImageTag}","${params.DockerHubUser}")
+                    dockerImageScan("${params.aws_account_id}","${params.Region}","${params.ECR_REPO_NAME}")
                 }
             }
         }
-        stage('Docker Iamge push : DockerHub'){
+        stage('Docker Iamge push : ECR'){
             when{expression{ params.action== 'create'}}
             steps{
                 script{
@@ -92,7 +92,15 @@ pipeline{
                 }
             }
         }
-         
+          }
+        stage('Docker Iamge Cleanup : ECR'){
+            when{expression{ params.action== 'create'}}
+            steps{
+                script{
+                    dockerIamgeCleanup("${params.aws_account_id}","${params.Region}","${params.ECR_REPO_NAME}")
+                }
+            }
+        }
 
          
     }
