@@ -92,7 +92,7 @@ pipeline{
                 }
                 }
             }
-        }
+        
           
         stage('Docker Iamge Cleanup : ECR'){
             when{expression{ params.action== 'create'}}
@@ -102,6 +102,9 @@ pipeline{
                 }
             }
         }
-
-         
     }
+}
+
+
+    
+
