@@ -88,7 +88,8 @@ pipeline{
             when{expression{ params.action== 'create'}}
             steps{
                 script{
-                    dockerImagePush("${params.ImageName}","${params.ImageTag}","${params.DockerHubUser}")
+                    dockerImagePush("${params.aws_account_id}","${params.Region}","${params.ECR_REPO_NAME}")
+                }
                 }
             }
         }
