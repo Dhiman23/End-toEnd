@@ -8,6 +8,10 @@ pipeline{
          string(name: 'Region',description: "name of the docker build",defaultValue: 'us-east-1')
           string(name: 'ECR_REPO_NAME',description: "name of the ECR",defaultValue: 'sajaldhimanitc1999')
     }
+    environment{
+        access_key = credentials('AWS_Key')
+        secret_key = credentials('AWS_Key_S')
+    }
    
 
     stages{
@@ -99,6 +103,23 @@ pipeline{
             steps{
                 script{
                     dockerImageCleanup("${params.aws_account_id}","${params.Region}","${params.ECR_REPO_NAME}")
+                }
+            }
+        }
+
+        stage('Create EKS Cluster : Terrform'){
+            steps{
+                script{
+                    dir('eks_module') {
+                       sh"""
+                       terraform init
+                       terraform plan -var 'access-key=$access_key'-var 'secret_key=$secret_key' -var 'region=${params.Region}' --var-file=./config/terraform.tfvars
+                       terraform apply -var 'access-key=$access_key'-var 'secret_key=$secret_key' -var 'region=${params.Region}' --var-file=./config/terraform.tfvars --auto-approve
+
+
+                       """
+                       
+                   }
                 }
             }
         }
