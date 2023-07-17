@@ -6,7 +6,7 @@ pipeline{
         choice(name: 'action',choices: 'create\ndelete', description: 'Choose create/destroy')
         string(name: 'aws_account_id',description: "AWS Account ID",defaultValue: '073372031334')
          string(name: 'Region',description: "name of the docker build",defaultValue: 'us-east-1')
-          string(name: 'ECR_REPO_NAME',description: "name of the ECR",defaultValue: 'sajaldhimanitc1999')
+          string(name: 'ECR_REPO_NAME',description: "name of the ECR",defaultValue: 'endtoend')
     }
     environment{
         access_key = credentials('AWS_Key')
