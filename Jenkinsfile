@@ -98,7 +98,7 @@ pipeline{
             when{expression{ params.action== 'create'}}
             steps{
                 script{
-                    dockerIamgeCleanup("${params.aws_account_id}","${params.Region}","${params.ECR_REPO_NAME}")
+                    dockerImageCleanup("${params.aws_account_id}","${params.Region}","${params.ECR_REPO_NAME}")
                 }
             }
         }
