@@ -7,10 +7,14 @@ pipeline{
         string(name: 'aws_account_id',description: "AWS Account ID",defaultValue: '073372031334')
          string(name: 'Region',description: "name of the docker build",defaultValue: 'us-east-1')
           string(name: 'ECR_REPO_NAME',description: "name of the ECR",defaultValue: 'endtoend')
+         string (name: 'cluster', defaultValue: 'demo-cluster',description: 'Eks cluster')
+         string (name: 'region', defaultValue: 'us-east-1',description: 'Eks cluster')
     }
     environment{
         access_key = credentials('AWS_Key')
         secret_key = credentials('AWS_Key_S')
+        cluster = "endtoend"
+        service = "endtoendsvc"
     }
    
 
@@ -27,6 +31,9 @@ pipeline{
                 }
             }
         }
+
+       
+  
 
         stage('Unit Test Maven'){
             when{expression{ params.action== 'create'}}
@@ -107,16 +114,53 @@ pipeline{
             }
         }
 
-        stage('Create EKS Cluster : Terrform'){
+             stage('Create EKS Cluster : Terraform'){
+          
             steps{
                 script{
-                    dir('eks_module') {
-                       
-                       sh'terraform init'
-                       sh'terraform plan -var "access-key=$access_key" -var "secret_key=$secret_key" -var "region=${params.Region}" -var-file=./config/terraform.tfvars'
-                       sh'terraform apply -var "access-key=$access_key" -var "secret_key=$secret_key" -var "region=${params.Region}" -var-file=./config/terraform.tfvars --auto-approve'
-                       
-                   }
+                  dir('eks_module'){
+                    sh """
+
+                       terraform init
+                       terraform plan -var 'access_key=$AWS_Key' -var 'region=${params.Region}' --var-file=./config/terraform.tfvars
+                       terraform apply -var 'access_key=$AWS_Key' -var 'region=${params.Region}' --var-file=./config/terraform.tfvars --auto-approve
+                    """
+                  }
+                }
+            }
+        }
+
+
+            stage('eks connect'){
+            steps{
+                sh """
+                aws eks --region ${params.region} update-kubeconfig --name ${params.cluster}
+
+                """;
+            }
+        }
+
+                  stage('eks deployment'){
+            when{expression (params.action== 'create')}
+            steps{
+                scripts{
+                    def apply = false
+                    try {
+                        input message: 'please confirm the apply to innitiate the deployments',ok: 'Read to apply the config'
+                        apply = true
+
+                    }
+                    catch(err){
+                       apply = false
+                       CurrentBuild.result= 'UNSTABLE'
+                    }
+                    if(apply){
+                        sh """
+                        kubectl apply -f .
+
+
+                        """
+                    }
                 }
             }
         }
