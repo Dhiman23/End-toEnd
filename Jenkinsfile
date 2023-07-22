@@ -120,8 +120,8 @@ pipeline{
                   dir('eks_module'){
                     sh '''
                        terraform init
-                       terraform plan -var "access_key=$ACCESS_KEY" -var "secret_key=$SCERET_KEY" -var "region=${params.Region}" --var-file=./config/terraform.tfvars
-                       terraform apply -var "access_key=$ACCESS_KEY" -var "secret_key=$SCERET_KEY"  -var "region=${params.Region}" --var-file=./config/terraform.tfvars --auto-approve
+                       terraform plan -var 'access_key=$ACCESS_KEY' -var 'secret_key=$SCERET_KEY' -var 'region=${params.Region}' --var-file=./config/terraform.tfvars
+                       terraform apply -var 'access_key=$ACCESS_KEY' -var 'secret_key=$SCERET_KEY'  -var 'region=${params.Region}' --var-file=./config/terraform.tfvars --auto-approve
                     '''
                   }
                 }
