@@ -141,8 +141,9 @@ pipeline{
         }
 
                   stage('eks deployment'){
-            when{expression (params.action== 'create')}
+            
             steps{
+                when{expression{ params.action== 'create'}}
                 script{
                     def apply = false
                     try {

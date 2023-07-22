@@ -18,4 +18,4 @@ spec:
       - name: javaapp
         image: 073372031334.dkr.ecr.us-east-1.amazonaws.com/endtoend:latest
         ports:
-        - containerPort: 8001
+        - containerPort: 800
