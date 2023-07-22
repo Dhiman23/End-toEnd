@@ -119,12 +119,12 @@ pipeline{
             steps{
                 script{
                   dir('eks_module'){
-                    sh """
+                    sh '''
 
                        terraform init
                        terraform plan -var 'access_key=$AWS_Key' -var 'secret_key=${AWS_Key_S}' -var 'region=${params.Region}' --var-file=./config/terraform.tfvars
                        terraform apply -var 'access_key=$AWS_Key' -var 'secret_key=${AWS_Key_S}'  -var 'region=${params.Region}' --var-file=./config/terraform.tfvars --auto-approve
-                    """
+                    '''
                   }
                 }
             }
@@ -133,10 +133,10 @@ pipeline{
 
             stage('eks connect'){
             steps{
-                sh """
+                sh '''
                 aws eks --region ${params.region} update-kubeconfig --name ${params.cluster}
 
-                """;
+                '''
             }
         }
 
@@ -156,11 +156,11 @@ pipeline{
                        CurrentBuild.result= 'UNSTABLE'
                     }
                     if(apply){
-                        sh """
+                        sh '
                         kubectl apply -f .
 
 
-                        """
+                        '
                     }
                 }
             }
