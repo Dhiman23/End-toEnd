@@ -156,11 +156,8 @@ pipeline{
                        CurrentBuild.result= 'UNSTABLE'
                     }
                     if(apply){
-                        sh '
-                        kubectl apply -f .
+                        sh "kubectl apply -f ."
 
-
-                        '
                     }
                 }
             }
