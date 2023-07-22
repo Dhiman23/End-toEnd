@@ -13,8 +13,7 @@ pipeline{
     environment{
         ACCESS_KEY = credentials('AWS_Key')
         SECRET_KEY = credentials('AWS_Key_S')
-        cluster = "endtoend"
-        service = "endtoendsvc"
+     
     }
    
 
@@ -119,11 +118,11 @@ pipeline{
             steps{
                 script{
                   dir('eks_module'){
-                    sh """
+                    sh '''
                        terraform init
-                       terraform plan -var 'access_key=$ACCESS_KEY' -var 'secret_key=$SCERET_KEY' -var 'region=${params.Region}' --var-file=./config/terraform.tfvars
-                       terraform apply -var 'access_key=$ACCESS_KEY' -var 'secret_key=$SCERET_KEY'  -var 'region=${params.Region}' --var-file=./config/terraform.tfvars --auto-approve
-                    """
+                       terraform plan -var "access_key=$ACCESS_KEY" -var "secret_key=$SCERET_KEY" -var "region=${params.Region}" --var-file=./config/terraform.tfvars
+                       terraform apply -var "access_key=$ACCESS_KEY" -var "secret_key=$SCERET_KEY"  -var "region=${params.Region}" --var-file=./config/terraform.tfvars --auto-approve
+                    '''
                   }
                 }
             }
