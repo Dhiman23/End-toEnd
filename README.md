@@ -1,8 +1,7 @@
-# End-toEnd
-# Jenkins Shared Library and Parameterized Pipeline with Docker, Git, ECR, and EKS Deployment 🚀🔧😃
+# Jenkins Shared Library and Parameterized Pipeline with Docker, Git, ECR, EKS, and Terraform Deployment 🚀🔧😃
 
 ## Introduction
-This README provides a comprehensive guide on how Jenkins Shared Library, Parameterized Pipeline, Docker, Git, ECR (Amazon Elastic Container Registry), and EKS (Amazon Elastic Kubernetes Service) were used together for deployment. We will cover the setup, configuration, and deployment process, with the added fun of emojis! Let's dive into more detail about each component of our deployment workflow. 🎉
+This README provides a comprehensive guide on how Jenkins Shared Library, Parameterized Pipeline, Docker, Git, ECR (Amazon Elastic Container Registry), EKS (Amazon Elastic Kubernetes Service), and Terraform were used together for deployment. We will cover the setup, configuration, and deployment process, with the added fun of emojis! Let's dive into more detail about each component of our deployment workflow. 🎉
 
 ## Step 1: Jenkins Shared Library
 Jenkins Shared Library is a powerful feature that allows us to define common functions, utilities, and custom steps to be used across multiple Jenkins pipelines. With a shared library, we encapsulate the pipeline logic, making it easier to maintain, update, and share best practices among various projects and teams.
@@ -49,13 +48,24 @@ Here's how we set up ECR integration:
 
 3. **Push Docker Image to ECR**: Once the Docker image is built, Jenkins pushes it to the corresponding ECR repository using the provided version tag. This allows us to track and manage different versions of the application easily.
 
-## Step 6: Amazon EKS (Elastic Kubernetes Service) Deployment
-Amazon EKS is our chosen platform for Kubernetes-based container orchestration. Kubernetes helps manage and scale our containerized applications efficiently.
+## Step 6: Amazon EKS (Elastic Kubernetes Service) Deployment with Terraform
+Amazon EKS is our chosen platform for Kubernetes-based container orchestration. Kubernetes helps manage and scale our containerized applications efficiently. To create and manage the EKS cluster, we utilize Terraform, an infrastructure-as-code (IaC) tool.
 
 The deployment to Amazon EKS involves the following steps:
+
+### Using Terraform for EKS Cluster Creation
+1. **Terraform Configuration**: We maintain Terraform configuration files that define the desired state of our EKS cluster. These files describe resources like the EKS cluster, node groups, and networking configurations.
+
+2. **Infrastructure as Code**: Terraform allows us to declare our infrastructure as code, ensuring that the EKS cluster is consistently provisioned and can be versioned alongside the application code.
+
+3. **Infrastructure Plan**: Before applying changes, Terraform generates an execution plan, showing the proposed changes to the infrastructure. This helps us review the planned actions before proceeding.
+
+4. **EKS Cluster Creation**: By running `terraform apply`, Terraform provisions the EKS cluster, including the necessary AWS resources like EC2 instances for worker nodes and networking components.
+
+### Deploying Application to EKS
 1. **Kubernetes Configuration**: We maintain Kubernetes deployment and service YAML files in our Git repository. These files define the desired state of our application, including the number of replicas, resource requests, and any other configuration details.
 
-2. **Apply Kubernetes Configuration**: As part of the Jenkins pipeline, we use the Kubernetes CLI (kubectl) to apply the changes defined in the Kubernetes YAML files. This action triggers the deployment and scaling of the application on the EKS cluster.
+2. **Kubectl Apply**: As part of the Jenkins pipeline, we use the Kubernetes CLI (kubectl) to apply the changes defined in the Kubernetes YAML files. This action triggers the deployment and scaling of the application on the EKS cluster.
 
 3. **Rolling Updates**: Kubernetes ensures seamless updates by using rolling updates. This means that the new version of the application is gradually rolled out while maintaining the desired number of replicas. If any issues occur, Kubernetes automatically rolls back to the previous version, ensuring high availability.
 
@@ -70,10 +80,13 @@ The deployment to Amazon EKS involves the following steps:
 5. The pipeline starts building the Docker image using the Dockerfile.
 6. The built image is tagged with the provided application version.
 7. Jenkins securely logs in to the Amazon ECR registry and pushes the Docker image to it.
-8. The pipeline communicates with Amazon EKS to deploy the updated container image to the selected environment (staging or production).
-9. Kubernetes applies the configuration changes, deploying the application with rolling updates to ensure high availability.
-10. Post-deployment tests and checks are performed to ensure the application is running correctly and verify that auto-scaling is functioning as expected.
-11. 🎉 The application is successfully deployed, and everyone celebrates with emojis! 😃🎉
+8. Terraform
+
+ provisions the EKS cluster based on the Terraform configuration files.
+9. The pipeline communicates with Kubernetes on the EKS cluster to deploy the updated container image to the selected environment (staging or production).
+10. Kubernetes applies the configuration changes, deploying the application with rolling updates to ensure high availability.
+11. Post-deployment tests and checks are performed to ensure the application is running correctly and verify that auto-scaling is functioning as expected.
+12. 🎉 The application is successfully deployed, and everyone celebrates with emojis! 😃🎉
 
 ## Conclusion
-By utilizing Jenkins Shared Library, Parameterized Pipeline, Docker, Git, Amazon ECR, and Amazon EKS, we have built a robust and scalable deployment workflow. This setup allows us to deliver updates efficiently, maintain consistency across environments, and promote collaboration among development teams. Embracing these modern technologies and practices ensures that our deployments are smooth, reliable, and delightful for both developers and end-users. Happy coding! 🚀💻😃
+By utilizing Jenkins Shared Library, Parameterized Pipeline, Docker, Git, Amazon ECR, Amazon EKS, and Terraform, we have built a robust and scalable deployment workflow. This setup allows us to deliver updates efficiently, maintain consistency across environments, and promote collaboration among development teams. Embracing these modern technologies and practices ensures that our deployments are smooth, reliable, and delightful for both developers and end-users. Happy coding! 🚀💻😃
